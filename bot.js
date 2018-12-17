@@ -31,6 +31,28 @@ if (message.content.toLowerCase().startsWith(prefix + `new`)) {
         c.send({ embed: embed });
     }).catch(console.error);
 }
+if (message.content.toLowerCase().startsWith(prefix + `close`)) {
+    if (!message.channel.name.startsWith(`ticket`)) return message.channel.send(`لا يمكنك استخدام أمر الإغلاق خارج قناة التذاكر`);
+ 
+    message.channel.send(`**$close** : هل انت متأكد من اغلاق التذكرة ؟ اذا انت متأكد اكتب`)
+    .then((m) => {
+      message.channel.awaitMessages(response => response.content === '$close', {
+        max: 1,
+        time: 10000,
+        errors: ['time'],
+      })
+      .then((collected) => {
+          message.channel.delete();
+        })
+        .catch(() => {
+          m.edit('انتهي وقت اغلاق التذكرة').then(m2 => {
+              m2.delete();
+          }, 3000);
+        });
+    });
+}
+ 
+});
 
 client.on('ready', () => {
    console.log(`----------------`);
@@ -42,7 +64,6 @@ client.on('ready', () => {
 client.user.setGame(`Made By ╲⎝⧹PBGAMING | Five🌟⧸⎠╱`,"http://twitch.tv/YouTube")
 client.user.setStatus("dnd")
 });
-
 
 
 client.login(process.env.BOT_TOKEN);// لا تغير فيها شيء
